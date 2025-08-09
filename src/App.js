@@ -5,25 +5,21 @@ function App() {
   const [tasks, setTasks] = useState([]);
 
   const addTask = () => {
-    if (task.trim() == "") return; 
-
-    
-      setTasks([...tasks, task]);
-      setTask("");
-    
+    if (task.trim() === "") return;
+    setTasks([...tasks, { text: task, completed: false }]);
+    setTask("");
   };
-  
+
   const toggleTask = (indexToToggle) => {
-    const newTasks = [...tasks];
-    newTasks[1].completed = !newTasks[1].completed; // step 2: flip value
+    const newTasks = tasks.map((t, i) =>
+      i === indexToToggle ? { ...t, completed: !t.completed } : t
+    );
     setTasks(newTasks);
   };
 
   const deleteTask = (index) => {
-    const newTasks = tasks.filter((_, i) => i !== index);
-    setTasks(newTasks);
+    setTasks(tasks.filter((_, i) => i !== index));
   };
-
 
   return (
     <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
@@ -35,17 +31,17 @@ function App() {
         onChange={(e) => setTask(e.target.value)}
       />
       <button onClick={addTask}>Add Task</button>
-<ul>
+      <ul>
         {tasks.map((t, index) => (
           <li
             key={index}
             style={{
               textDecoration: t.completed ? "line-through" : "none",
-              cursor: "pointer"
+              cursor: "pointer",
             }}
             onClick={() => toggleTask(index)}
           >
-            {t}
+            {t.text}
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -58,7 +54,6 @@ function App() {
           </li>
         ))}
       </ul>
-
     </div>
   );
 }
