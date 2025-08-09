@@ -12,6 +12,12 @@ function App() {
       setTask("");
     
   };
+  
+  const toggleTask = (indexToToggle) => {
+    const newTasks = [...tasks];
+    newTasks[1].completed = !newTasks[1].completed; // step 2: flip value
+    setTasks(newTasks);
+  };
 
   const deleteTask = (index) => {
     const newTasks = tasks.filter((_, i) => i !== index);
@@ -29,12 +35,26 @@ function App() {
         onChange={(e) => setTask(e.target.value)}
       />
       <button onClick={addTask}>Add Task</button>
-      
-      <ul>
-        {tasks.map((task, index) => (
-          <li key={index}>
-            {task}
-            <button onClick={() => deleteTask(index)}>Delete</button>
+<ul>
+        {tasks.map((t, index) => (
+          <li
+            key={index}
+            style={{
+              textDecoration: t.completed ? "line-through" : "none",
+              cursor: "pointer"
+            }}
+            onClick={() => toggleTask(index)}
+          >
+            {t}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                deleteTask(index);
+              }}
+              style={{ marginLeft: "10px" }}
+            >
+              Delete
+            </button>
           </li>
         ))}
       </ul>
