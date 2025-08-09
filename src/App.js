@@ -21,8 +21,9 @@ function App() {
     setTasks(tasks.filter((_, i) => i !== index));
   };
 
-  return (
-    <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
+return (
+  <div className="app-container">
+    <div className="todo-box">
       <h1>My To-Do App</h1>
       <input
         type="text"
@@ -55,7 +56,9 @@ function App() {
         ))}
       </ul>
     </div>
-  );
+  </div>
+);
+
 }
 
 export default App;
