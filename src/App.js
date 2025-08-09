@@ -13,6 +13,12 @@ function App() {
     
   };
 
+  const deleteTask = (index) => {
+    const newTasks = tasks.filter((_, i) => i !== index);
+    setTasks(newTasks);
+  };
+
+
   return (
     <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
       <h1>My To-Do App</h1>
@@ -22,7 +28,17 @@ function App() {
         value={task}
         onChange={(e) => setTask(e.target.value)}
       />
-      <button>Add Task</button>
+      <button onClick={addTask}>Add Task</button>
+      
+      <ul>
+        {tasks.map((task, index) => (
+          <li key={index}>
+            {task}
+            <button onClick={() => deleteTask(index)}>Delete</button>
+          </li>
+        ))}
+      </ul>
+
     </div>
   );
 }
