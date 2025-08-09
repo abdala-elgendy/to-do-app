@@ -2,6 +2,16 @@ import { useState } from "react";
 
 function App() {
   const [task, setTask] = useState("");
+  const [tasks, setTasks] = useState([]);
+
+  const addTask = () => {
+    if (task.trim() == "") return; 
+
+    
+      setTasks([...tasks, task]);
+      setTask("");
+    
+  };
 
   return (
     <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
