@@ -1,8 +1,17 @@
-import { useState } from "react";
-import "./App.css"
+import { useState, useEffect } from "react";
+import "./App.css";
 function App() {
+  const [tasks, setTasks] = useState(() => {
+    const savedTasks = localStorage.getItem("tasks");
+    return savedTasks ? JSON.parse(savedTasks) : [];
+  });
+
   const [task, setTask] = useState("");
-  const [tasks, setTasks] = useState([]);
+
+
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
 
   const addTask = () => {
     if (task.trim() === "") return;
@@ -21,44 +30,46 @@ function App() {
     setTasks(tasks.filter((_, i) => i !== index));
   };
 
-return (
-  <div className="app-container">
-    <div className="todo-box">
-      <h1>My To-Do App</h1>
-      <input
-        type="text"
-        placeholder="Enter a task..."
-        value={task}
-        onChange={(e) => setTask(e.target.value)}
-      />
-      <button onClick={addTask}>Add Task</button>
-      <ul>
-        {tasks.map((t, index) => (
-          <li
-            key={index}
-            style={{
-              textDecoration: t.completed ? "line-through" : "none",
-              cursor: "pointer",
-            }}
-            onClick={() => toggleTask(index)}
-          >
-            {t.text}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                deleteTask(index);
-              }}
-              style={{ marginLeft: "10px" }}
-            >
-              Delete
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
-  </div>
-);
+  return (
+    <div className="app-container">
+      <div className="todo-box">
+        <h1>My To-Do App</h1>
+          <input
+            type="text"
+            className="task-input"
+            placeholder="Enter a task..."
+            value={task}
+            onChange={(e) => setTask(e.target.value)}
+          />
+          <button className="add-task-button" onClick={addTask}>Add Task</button>
 
+
+        <ul>
+          {tasks.map((t, index) => (
+            <li
+              key={index}
+              style={{
+                textDecoration: t.completed ? "line-through" : "none",
+                cursor: "pointer",
+              }}
+              onClick={() => toggleTask(index)}
+            >
+              {t.text}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteTask(index);
+                }}
+                style={{ marginLeft: "10px" }}
+              >
+                Delete
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
 }
 
 export default App;
