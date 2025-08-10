@@ -3,6 +3,8 @@ import "./App.css";
 import TaskList from "./component/TaskList/TaskList";
 import TaskInput 
   from "./component/TaskInput/TaskInput";
+
+import axios from "axios";
 function App() {
   const [tasks, setTasks] = useState(() => {
     const savedTasks = localStorage.getItem("tasks");
@@ -10,26 +12,41 @@ function App() {
   });
 
   const [task, setTask] = useState("");
-
+  const API_URL = "http://localhost:8080/tasks";
+  
   useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-  }, [tasks]);
+    axios.get(`${API_URL}/alltasks`)
+      .then(res => setTasks(res.data))
+      .catch(err => console.error("Error fetching tasks:", err));
+  }, []);
 
   const addTask = () => {
     if (task.trim() === "") return;
-    setTasks([...tasks, { text: task, completed: false }]);
-    setTask("");
+
+    axios.post(`${API_URL}/addTask`, task, {
+      headers: { "Content-Type": "application/json" }
+    })
+    .then(res => {
+      setTasks([...tasks, res.data]);
+      setTask("");
+    })
+    .catch(err => console.error("Error adding task:", err));
   };
 
-  const toggleTask = (indexToToggle) => {
-    const newTasks = tasks.map((t, i) =>
-      i === indexToToggle ? { ...t, completed: !t.completed } : t
-    );
-    setTasks(newTasks);
+  const toggleTask = (id) => {
+    axios.put(`${API_URL}/${id}/complete`)
+      .then(res => {
+        setTasks(tasks.map(t => t.id === id ? res.data : t));
+      })
+      .catch(err => console.error("Error toggling task:", err));
   };
 
-  const deleteTask = (index) => {
-    setTasks(tasks.filter((_, i) => i !== index));
+const deleteTask = (id) => {
+    axios.delete(`${API_URL}/${id}`)
+      .then(() => {
+        setTasks(tasks.filter(t => t.id !== id));
+      })
+      .catch(err => console.error("Error deleting task:", err));
   };
 
   return (
