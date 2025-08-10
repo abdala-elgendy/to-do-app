@@ -33,13 +33,23 @@ function App() {
     .catch(err => console.error("Error adding task:", err));
   };
 
-  const toggleTask = (id) => {
-    axios.put(`${API_URL}/${id}/complete`)
-      .then(res => {
-        setTasks(tasks.map(t => t.id === id ? res.data : t));
-      })
-      .catch(err => console.error("Error toggling task:", err));
-  };
+const toggleTask = async (id) => {
+  const task = tasks.find(t => t.id === id);
+  if (!task) return;
+
+  if (task.completed) {
+  
+    await fetch(`http://localhost:8080/tasks/uncomplete/${id}`, { method: "POST" });
+    setTasks(tasks.map(t =>
+      t.id === id ? { ...t, completed: false } : t
+    ));
+  } else {
+    await fetch(`http://localhost:8080/tasks/${id}/complete`, { method: "put" });
+    setTasks(tasks.map(t =>
+      t.id === id ? { ...t, completed: true } : t
+    ));
+  }
+};
 
 const deleteTask = (id) => {
     axios.delete(`${API_URL}/${id}`)
